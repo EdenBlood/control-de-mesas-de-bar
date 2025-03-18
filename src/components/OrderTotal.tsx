@@ -1,29 +1,15 @@
-import { useMemo  } from "react"
+import { Dispatch, useMemo  } from "react"
 import { OrderItem } from "../types"
 import formatCurrency from "../helpers";
+import { OrderActions } from "../reducers/order-reducer";
 
 type OrderTotalsProps = {
   order: OrderItem[]
   tip: number
-  placeOrder: () => void
+  dispatch: Dispatch<OrderActions>
 }
-export default function OrderTotal({order, tip, placeOrder} : OrderTotalsProps) {
-  //* Mi manera
-  // const [ subTotal, setSubTotal ] = useState(0);
-  // const [ total, setTotal ] = useState(0);
-  // const [ propinaSelect, setPropinaSelect ] = useState(0.10);
-  // const [ propina, setPropina ] = useState(0);
+export default function OrderTotal({order, tip, dispatch} : OrderTotalsProps) {
 
-  // useEffect(() => {
-  //   const updateResume = () => {
-  //     setSubTotal( order.reduce( ( acc, item ) => acc += (item.price * item.quantity),0) )
-  //     setPropina( subTotal * propinaSelect )
-  //     setTotal( subTotal + propina );
-  //   }
-  //   updateResume();
-  // }, [order, propinaSelect])
-  
-  //*Video
   const subtotalAmount = useMemo( () => order.reduce( (total, item) => total += (item.price * item.quantity), 0 ), [order])
 
   const tipAmount = useMemo(() => subtotalAmount * tip ,[tip, subtotalAmount])
@@ -41,7 +27,7 @@ export default function OrderTotal({order, tip, placeOrder} : OrderTotalsProps) 
       <button 
         className="text-center w-full dark:bg-white bg-black dark:text-black text-white font-bold uppercase p-4 rounded-xl cursor-pointer hover:dark:bg-gray-200 hover:bg-gray-800 disabled:opacity-50"
         disabled={totalAmount === 0}
-        onClick={ placeOrder }
+        onClick={ () => dispatch({ type: 'place-order' }) }
       >
         Guardar Orden
       </button>
